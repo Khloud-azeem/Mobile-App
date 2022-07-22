@@ -14,6 +14,8 @@ class _ExerciseItemContentState extends State<ExerciseItemContent> {
   // }
   @override
   Widget build(BuildContext context) {
+    var height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
     return Card(
       margin: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
       // elevation: 5,
@@ -22,7 +24,7 @@ class _ExerciseItemContentState extends State<ExerciseItemContent> {
         children: <Widget>[
           Container(
             // margin: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
-            height: MediaQuery.of(context).size.height * 0.25,
+            height: height * 0.25,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
             ),
@@ -40,10 +42,9 @@ class _ExerciseItemContentState extends State<ExerciseItemContent> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               color: Color.fromRGBO(0, 0, 0, .3),
-                              //  color: Color.fromRGBO(143, 148, 251, 0.4),
-
+              //  color: Color.fromRGBO(143, 148, 251, 0.4),
             ),
-            height: MediaQuery.of(context).size.height * 0.25,
+            height: height * 0.25,
           ),
           Positioned(
             bottom: widget.exerciseData.bottom,

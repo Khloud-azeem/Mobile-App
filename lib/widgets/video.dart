@@ -1,6 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:my_pt/providers/exercise_video_data.dart';
 import 'package:my_pt/value_notifiers/value_notifiers.dart';
 import 'package:my_pt/widgets/painter_widget.dart';
+import 'package:my_pt/widgets/pullet.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +20,12 @@ class Videoo extends StatefulWidget {
 class _VideooState extends State<Videoo> {
   VideoPlayerController? _controller;
   VideoPlayerController? _toBeDisposed;
-  final ImagePicker _picker = ImagePicker();
+  bool _isPlaying = false;
+  Duration? _duration;
+  Duration? _position;
+  bool _isEnd = false;
+  double videoDurtion = 0;
+  double aspectRatio = 16 / 9;
 
   @override
   void deactivate() {
@@ -42,27 +50,25 @@ class _VideooState extends State<Videoo> {
     _controller = null;
   }
 
-  Future<dynamic> initVideoPlayer() async {
-    _controller = VideoPlayerController.file(File(videoPath.value));
-    var _initializedControllerFuture = _controller!.initialize();
-    _controller!.setLooping(false);
-    return _initializedControllerFuture;
+  Future<void> initVideoPlayer() async {
+    try {
+      _controller = VideoPlayerController.file(File(videoPath.value));
+      var _initializedControllerFuture = await _controller!.initialize();
+      _controller!.setLooping(false);
+      setState(() {
+        aspectRatio = _controller!.value.aspectRatio;
+        //     _duration = _controller!.value.duration;
+      });
+      // print(videoPath.value);
+
+      return _initializedControllerFuture;
+    } catch (error) {
+      print('error: $error');
+    }
   }
 
   void _playVideo(File? file) {
-    // try {
-    //   if (file != null) {
-    // await _disposeVideoController();
-
-    // _controller = VideoPlayerController.file(File(videoPath.value));
-    // await _controller!.initialize();
-    // await _controller!.setLooping(false);
     _controller!.play();
-    // setState(() {});
-    // }
-    // } catch (error) {
-    //   print('error: $error');
-    // }
   }
 
   Future<void> _onImageButtonPressed(ImageSource source, double height,
@@ -75,54 +81,86 @@ class _VideooState extends State<Videoo> {
     videoPath.value = _file!.path;
     await initVideoPlayer();
     setState(() {});
+  }
 
-    // await _playVideo(_file);
+  List<Widget> commentsWidgetList = [];
+  getCommentList(width) {
+    var length = comments.value.length;
+    for (var i = 0; i <= length; i++) {
+      commentsWidgetList.add(Pullet(text: comments.value[i], width: width));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final videoData = Provider.of<ExcerciseVideoData>(context, listen: false);
-    final double height = MediaQuery.of(context).size.height;
-    final double width = MediaQuery.of(context).size.width;
+    // final double height = MediaQuery.of(context).size.height*0.5;
+    // final double width = MediaQuery.of(context).size.width;
+    // double aspectRatio = _controller!.value.aspectRatio;
+    final double height = ((MediaQuery.of(context).size.width) / (aspectRatio) -
+            AppBar().preferredSize.height) *
+        0.8;
+    final double width = (MediaQuery.of(context).size.width);
+    print('aho: $height .. $width');
     return Scaffold(
-      appBar: AppBar(title: Text('Zeft')),
-      body: FutureBuilder(
-          future:
-              // Future.delayed(Duration(seconds: 1)),
-              // _playVideo(File(videoPath.value)),
-              videoData.getData(width, height, context),
-          builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Text("waiting");
-            }
-            print("i'm ready");
-            _playVideo(File(videoPath.value));
-            return _controller!.value.isInitialized
-                ? Stack(
-                    children: <Widget>[
-                      // Container(
-                      //   child: AspectRatio(
-                      //     aspectRatio: _controller!.value.aspectRatio,
-                      //     child: VideoPlayer(_controller!),
-                      //   ),
-                      // ),
-                      PainterWidget()
-                    ],
-                  )
-                : Text('not initialized');
-          }),
-      // _controller != null
-      //     ? Container(
-      //         child: AspectRatio(
-      //         aspectRatio: _controller!.value.aspectRatio,
-      //         child: VideoPlayer(_controller!),
-      //       )
-      // VideoPreview(
-      //   retrieveLostData: retrieveLostData,
-      //   previewVideo: _previewVideo,
-      // ),
-      // )
-      // : Container(),
+      appBar: AppBar(title: Text('YOUR RESULTS')),
+      body: SingleChildScrollView(
+        child: FutureBuilder(
+            future: videoData.getData(width, height, context),
+            builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+              _playVideo(File(videoPath.value));
+              // if (comments.value.isNotEmpty) print('commenttt: ${comments.value[0]}');
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    // alignment: Alignment.center,
+                    height: height,
+                    width: width,
+                    child: Stack(
+                      children: <Widget>[
+                        Container(
+                          alignment: Alignment.center,
+                          // height: height,
+                          // width: width,
+                          child: AspectRatio(
+                            aspectRatio: _controller!.value.aspectRatio,
+                            child: VideoPlayer(_controller!),
+                          ),
+                        ),
+                        Container(
+                          alignment: Alignment.center,
+                          // height: height,
+                          // width: width,
+                          child: PainterWidget(
+                            height: height,
+                            width: width,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 30,),
+                  Column(
+                    children: [
+                      Pullet(text: 'NUMBER OF SQUATS IS ${squats.value[0]}', width: width),
+                      if(comments.value.isEmpty)
+                      Container()
+                      else
+                      Pullet(text: comments.value[0], width: width,),
+                      // Pullet(text: comments.value[1], width: width,),
+                      // Pullet(text: comments.value[3], width: width,),
+                      // Pullet(text: comments.value[4], width: width,),
+
+                      // commentsWidgetList as List<Widget>
+                    ]
+                  ),
+                ],
+              );
+
+              // });
+            }),
+      ),
       floatingActionButton: FloatingActionButton(
           onPressed: () =>
               _onImageButtonPressed(ImageSource.gallery, 500, 500, context)),

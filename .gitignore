@@ -48,8 +48,10 @@ app.*.map.json
 #servers
 Deep-Learning/
 Backend/
+Backend_old/
 Backend_m/
 django/
 django_m/
 windows/
+Backend_f/
 

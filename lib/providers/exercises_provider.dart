@@ -6,31 +6,31 @@ class ExercisesProvider with ChangeNotifier {
   final List<Exercise> _items = [
     Exercise(
       id: 'w1',
-      title: 'SQUAT',
-      imageUrl: 'images/Squat_man.jpg',
+      title: 'PULSE SQUAT',
+      imageUrl: 'images/pulse_squat.webp',
       bottom: 100,
-      left: 230
+      left: 50
     ),
     Exercise(
       id: 'w2',
-      title: 'PUSH UP',
-      imageUrl: 'images/pushup__.jpg',
-      bottom: 25,
+      title: 'WALL SQUAT',
+      imageUrl: 'images/wall_squat.jpg',
+      bottom: 100,
       left: 50
     ),
     Exercise(
       id: 'w3',
-      title: 'SPLIT',
-      imageUrl: 'images/split__.jpg',
+      title: 'DEEP SQUAT',
+      imageUrl: 'images/deep_squat.jpg',
       bottom: 100,
       left: 50
     ),
     Exercise(
       id: 'w4',
-      title: 'LUNGES',
-      imageUrl: 'images/lunges.jpg',
+      title: 'STANDARD SQUAT',
+      imageUrl: 'images/Squat_man.jpg',
       bottom: 100,
-      left: 230
+      left: 50
     ),
     // Exercise(
     //   id: 'w5',

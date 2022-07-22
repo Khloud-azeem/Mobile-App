@@ -23,33 +23,35 @@ class ExersicesOverviewScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('YOUR PERSONAL TRAINER'),
       ),
-      body: SizedBox(
-        height: height,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              // height: height * 0.05,
-              alignment: Alignment.bottomLeft,
-              margin: EdgeInsets.only(left: 10),
-              padding: const EdgeInsets.all(8.0),
-              child: Text('ALL EXERCISES',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-            ),
-            Container(
-              height: height * 0.95,
-              child: ListView.builder(
-                itemBuilder: (context, idx) {
-                  return ChangeNotifierProvider.value(
-                    value: exercisesData.items[idx],
-                    child: ExerciseItem(),
-                  );
-                },
-                itemCount: exercisesData.items.length,
+      body: SingleChildScrollView(
+        child: SizedBox(
+          // height: height,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                // height: height * 0.05,
+                alignment: Alignment.bottomLeft,
+                margin: EdgeInsets.only(left: 10),
+                padding: const EdgeInsets.all(8.0),
+                child: Text('ALL EXERCISES',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
               ),
-            ),
-          ],
+              Container(
+                height: height,
+                child: ListView.builder(
+                  itemBuilder: (context, idx) {
+                    return ChangeNotifierProvider.value(
+                      value: exercisesData.items[idx],
+                      child: ExerciseItem(),
+                    );
+                  },
+                  itemCount: exercisesData.items.length,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       // bottomNavigationBar: LowerBar(),
